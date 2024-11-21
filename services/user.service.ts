@@ -1,4 +1,10 @@
+import {
+  UserExistsError,
+  UserNotFoundError,
+  InvalidPasswordError,
+} from "../errors/error";
 import User from "../models/User.model";
+import Bun from "bun";
 
 const createUser = async (
   fullName: string,
@@ -6,20 +12,20 @@ const createUser = async (
   password: string
 ) => {
   try {
-    const user = await User.findOne({ email });
-    if (user) {
-      const error: any = new Error("User already exists");
-      error.type = "USER_EXIST";
-      throw error;
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new UserExistsError();
     }
+
+    const hashedPassword = await Bun.password.hash(password);
     const newUser = await User.create({
       fullName,
       email,
-      password,
+      password: hashedPassword,
     });
+
     return newUser;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -28,18 +34,16 @@ const verifyUser = async (email: string, password: string) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      const error: any = new Error("User not found");
-      error.type = "USER_NOT_FOUND";
-      throw error;
+      throw new UserNotFoundError();
     }
+
     const verifyPassword = await Bun.password.verify(password, user.password);
     if (!verifyPassword) {
-      const error: any = new Error("Invalid password");
-      error.type = "INVALID_PASSWORD";
-      throw error;
+      throw new InvalidPasswordError();
     }
+
+    return user;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };

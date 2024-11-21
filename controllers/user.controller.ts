@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { createUser, verifyUser } from "../services/user.service";
-import User from "../models/User.model";
+import { handleError } from "../utils/handleError";
 
 const getSignUp = async (req: Request, res: Response) => {
   res.render("signup", { title: "Signup" });
@@ -12,8 +12,9 @@ const getSignIn = async (req: Request, res: Response) => {
 
 const postSignUp = async (req: Request, res: Response) => {
   const { fullName, email, password } = req.body;
+
   if (!fullName || !email || !password) {
-    res.json({ error: "All fields are required" });
+    res.status(400).json({ error: "All fields are required" });
     return;
   }
 
@@ -21,11 +22,7 @@ const postSignUp = async (req: Request, res: Response) => {
     await createUser(fullName, email, password);
     res.redirect("/user/signin");
   } catch (error: any) {
-    if (error.type === "USER_EXIST") {
-      res.status(400).json({ message: error.message });
-    } else {
-      res.status(500).json({ error: "Server error. Please try again later." });
-    }
+    handleError(error, res);
   }
 };
 
@@ -33,7 +30,7 @@ const postSignIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.json({ error: "All fields are required" });
+    res.status(400).json({ error: "All fields are required" });
     return;
   }
 
@@ -41,14 +38,7 @@ const postSignIn = async (req: Request, res: Response) => {
     await verifyUser(email, password);
     res.redirect("/");
   } catch (error: any) {
-    if (error.type === "USER_NOT_FOUND") {
-      res.status(400).json({ message: error.message });
-      return;
-    } else if (error.type === "INVALID_PASSWORD") {
-      res.status(400).json({ message: error.message });
-      return;
-    }
-    res.status(500).json({ error: "Server error. Please try again later." });
+    handleError(error, res);
   }
 };
 

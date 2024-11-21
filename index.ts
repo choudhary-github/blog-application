@@ -1,20 +1,16 @@
-import express, { urlencoded } from "express";
-import mongoose from "mongoose";
+import express from "express";
+import { urlencoded } from "express";
 import userRouter from "./routes/user";
+import connectDB from "./config/ds";
+
 const PORT = 3000;
 const app = express();
 
-mongoose
-  .connect("mongodb://127.0.0.1:27017/blog-application")
-  .then(() => {
-    console.log("Database connected");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+connectDB();
 
 app.use(urlencoded({ extended: true }));
 app.set("view engine", "ejs");
+
 app.use("/user", userRouter);
 
 app.get("/", (req, res) => {
@@ -24,3 +20,5 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+export default app;
