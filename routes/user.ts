@@ -9,8 +9,8 @@ import {
 
 const userRouter = Router();
 
-userRouter.get("/", (req, res) => {
-  res.redirect("/");
+userRouter.get("/", async (req, res) => {
+  res.render("signin", { title: "SIgnin" });
 });
 
 userRouter.route("/signin").get(getSignIn).post(postSignIn);

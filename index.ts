@@ -8,7 +8,8 @@ const app = express();
 
 connectDB();
 
-app.use(urlencoded({ extended: true }));
+app.use(urlencoded({ extended: false }));
+app.use(express.json());
 app.set("view engine", "ejs");
 
 app.use("/user", userRouter);

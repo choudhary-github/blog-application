@@ -30,13 +30,14 @@ const postSignIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.status(400).json({ error: "All fields are required" });
+    // res.status(400).json({ error: "All fields are required" });
+    res.render("signin", { title: "SignIn", error: "All fields are required" });
     return;
   }
 
   try {
-    await verifyUser(email, password);
-    res.redirect("/");
+    const token = await verifyUser(email, password);
+    res.cookie("token", token).redirect("/");
   } catch (error: any) {
     handleError(error, res);
   }
