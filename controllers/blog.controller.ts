@@ -8,9 +8,31 @@ const getBlog = async (req: any, res: Response) => {
 };
 
 const createBlog = async (req: Request, res: Response) => {
-  console.log(req.body);
+  const { title, body } = req.body;
+  const user = req.user;
 
-  res.redirect("/");
+  if (!title || !body || !user) {
+    res.render("create_blog", {
+      title: "Create Blog",
+      error: { message: "All fields are required", user },
+    });
+    return;
+  }
+
+  try {
+    const blog = new Blog({
+      title,
+      body,
+      coverImage: req.file?.path,
+      createdBy: user.id,
+    });
+
+    await blog.save();
+    res.redirect("/");
+  } catch (error: any) {
+    console.log(error);
+    res.render("create_blog", { title: "Create Blog", error: error, user });
+  }
 };
 
 export { getBlog, createBlog };
