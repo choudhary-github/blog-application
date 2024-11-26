@@ -43,4 +43,8 @@ const postSignIn = async (req: Request, res: Response) => {
   }
 };
 
-export { getSignUp, postSignUp, getSignIn, postSignIn };
+const getLogout = async (req: Request, res: Response) => {
+  res.clearCookie("token").redirect("/user/signin");
+};
+
+export { getSignUp, postSignUp, getSignIn, postSignIn, getLogout };

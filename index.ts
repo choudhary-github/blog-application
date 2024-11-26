@@ -1,7 +1,11 @@
 import express from "express";
 import { urlencoded } from "express";
-import userRouter from "./routes/user";
+import { userRouter } from "./routes/user";
+import { blogRouter } from "./routes/blog";
 import connectDB from "./config/ds";
+import { checkAuthenticationCookie } from "./middlewares/authenitcation";
+import { authorization } from "./middlewares/authorization";
+import cookieParser from "cookie-parser";
 
 const PORT = 3000;
 const app = express();
@@ -12,11 +16,17 @@ app.use(urlencoded({ extended: false }));
 app.use(express.json());
 app.set("view engine", "ejs");
 
+app.use(cookieParser());
+app.use(checkAuthenticationCookie("token"));
+
+app.get("/", (req: any, res) => {
+  res.render("home", { title: "Home", user: req.user });
+});
 app.use("/user", userRouter);
 
-app.get("/", (req, res) => {
-  res.render("home", { title: "Home" });
-});
+app.use(authorization);
+
+app.use("/create", blogRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

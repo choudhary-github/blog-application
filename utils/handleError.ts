@@ -12,7 +12,7 @@ const handleError = (error: Error, res: Response) => {
     error instanceof InvalidPasswordError
   ) {
     res.render("signin", {
-      title: "SignIn",
+      title: "Error",
       error: { message: error.message },
     });
     return;

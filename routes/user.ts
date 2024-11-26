@@ -5,16 +5,19 @@ import {
   postSignUp,
   getSignIn,
   postSignIn,
+  getLogout,
 } from "../controllers/user.controller";
 
 const userRouter = Router();
 
-userRouter.get("/", async (req, res) => {
-  res.render("signin", { title: "SIgnin" });
+userRouter.get("/", async (req: any, res) => {
+  res.render("signin", { title: "Signin", user: req.user });
 });
 
 userRouter.route("/signin").get(getSignIn).post(postSignIn);
 
 userRouter.route("/signup").get(getSignUp).post(postSignUp);
 
-export default userRouter;
+userRouter.route("/logout").get(getLogout);
+
+export { userRouter };

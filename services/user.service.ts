@@ -5,7 +5,7 @@ import {
 } from "../errors/error";
 import User from "../models/User.model";
 import Bun from "bun";
-import { createToken } from "../services/authentication.service";
+import { createToken, validateToken } from "../services/authentication.service";
 
 const createUser = async (
   fullName: string,
@@ -43,7 +43,8 @@ const verifyUser = async (email: string, password: string) => {
       throw new InvalidPasswordError();
     }
     const token = createToken({
-      email,
+      id: user._id,
+      email: user.email,
       fullName: user.fullName,
       roles: user.roles,
     });
