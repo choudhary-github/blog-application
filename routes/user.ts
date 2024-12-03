@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import User from "../models/User.model";
 import {
   getSignUp,
@@ -10,7 +11,7 @@ import {
 
 const userRouter = Router();
 
-userRouter.get("/", async (req: any, res) => {
+userRouter.get("/", async (req: Request, res: Response) => {
   res.render("signin", { title: "Signin", user: req.user });
 });
 

@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
-import Blog from "../models/Blog.model";
+import { handleImgUpload } from "../utils/handleImgbbUpload";
+import * as BlogService from "../services/blog.service";
 
-const getBlog = async (req: any, res: Response) => {
+const getBlogPage = async (req: Request, res: Response) => {
   const user = req.user;
   res.render("create_blog", { title: "Create Blog", user });
   return;
@@ -20,14 +21,15 @@ const createBlog = async (req: Request, res: Response) => {
   }
 
   try {
-    const blog = new Blog({
+    const data = await handleImgUpload(req.file);
+
+    const blog = await BlogService.createBlog({
       title,
       body,
-      coverImage: req.file?.path,
+      coverImage: data.data.url,
       createdBy: user.id,
     });
 
-    await blog.save();
     res.redirect("/");
   } catch (error: any) {
     console.log(error);
@@ -35,4 +37,4 @@ const createBlog = async (req: Request, res: Response) => {
   }
 };
 
-export { getBlog, createBlog };
+export { getBlogPage, createBlog };

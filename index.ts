@@ -2,6 +2,7 @@ import express from "express";
 import { urlencoded } from "express";
 import { userRouter } from "./routes/user";
 import { blogRouter } from "./routes/blog";
+import { homeRouter } from "./routes/home";
 import connectDB from "./config/ds";
 import { checkAuthenticationCookie } from "./middlewares/authenitcation";
 import { authorization } from "./middlewares/authorization";
@@ -19,9 +20,7 @@ app.set("view engine", "ejs");
 app.use(cookieParser());
 app.use(checkAuthenticationCookie("token"));
 
-app.get("/", (req: any, res) => {
-  res.render("home", { title: "Home", user: req.user });
-});
+app.get("/", homeRouter);
 app.use("/user", userRouter);
 
 app.use(authorization);

@@ -3,5 +3,16 @@
   <%- include('partials/head') %>
   <body>
     <%- include('navbar') %> <%- include('partials/script') %>
+    <% if (locals.data) { %>
+     <% locals.data.forEach(element => { %>
+      <div class="card m-2" style="width: 18rem;">
+        <img src="<%= element.coverImage %>" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><%= element.title %></h5>
+          <a href="#" class="btn btn-primary">View</a>
+        </div>
+      </div>
+     <% }) %>
+    <% } %>
   </body>
 </html>

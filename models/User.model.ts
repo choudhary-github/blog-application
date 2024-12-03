@@ -41,4 +41,13 @@ userSchema.pre("save", async function (next) {
 
 const User = model("User", userSchema);
 
+export type User = {
+  id: string;
+  fullName: string;
+  email: string;
+  password: string;
+  roles: string;
+  profileImage: string;
+};
+
 export default User;

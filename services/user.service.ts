@@ -18,13 +18,13 @@ const createUser = async (
       throw new UserExistsError();
     }
 
-    const hashedPassword = await Bun.password.hash(password);
+    // const hashedPassword = await Bun.password.hash(password);
     const newUser = await User.create({
       fullName,
       email,
-      password: hashedPassword,
+      password,
     });
-
+    await newUser.save();
     return newUser;
   } catch (error) {
     throw error;
